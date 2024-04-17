@@ -35,7 +35,7 @@ VALIDATE $? "Enabled nodejs:20"
 dnf install nodejs -y -y &>>$LOG
 VALIDATE $? "NodeJS Installation"
  
-useradd expense -y &>>$LOG
+useradd expense &>>$LOG
 VALIDATE $? "expense user created"
 
 curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip -y &>>$LOG
