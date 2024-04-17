@@ -38,13 +38,13 @@ VALIDATE $? "NodeJS Installation"
 useradd expense &>>$LOG
 VALIDATE $? "expense user created"
 
-curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip -y &>>$LOG
+curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip &>>$LOG
 VALIDATE $? "Downloaded Backend Code"
 
-mkdir /app -y &>>$LOG
+mkdir /app  &>>$LOG
 VALIDATE $? "app directory created"
 
-cd /app -y &>>$LOG
+cd /app &>>$LOG
 VALIDATE $? "Moved to app directory"
 
 unzip /tmp/backend.zip  &>>$LOG
