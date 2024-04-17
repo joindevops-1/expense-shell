@@ -36,7 +36,6 @@ dnf install nodejs -y -y &>>$LOG
 VALIDATE $? "NodeJS Installation"
  
 useradd expense &>>$LOG
-VALIDATE $? "expense user created"
 
 curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip &>>$LOG
 VALIDATE $? "Downloaded Backend Code"
