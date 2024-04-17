@@ -54,7 +54,14 @@ npm install   &>>$LOG
 VALIDATE $? "Installed NodeJS dependencies"
 
 cp /home/ec2-user/expense-shell/backend.service /etc/systemd/system/backend.service
+VALIDATE $? "Copied backend service"
 
+systemctl daemon-reload
+systemctl start backend
+systemctl enable backend
+dnf install mysql -y
+mysql -h db.daws78s.online -uroot -pExpenseApp@1 < /app/schema/backend.sql
+systemctl restart backend
 
 
 
