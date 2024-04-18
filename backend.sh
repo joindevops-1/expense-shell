@@ -7,6 +7,8 @@ LOG=/tmp/$LOGFILE-$DATE.log
 R="\e[31m"
 G="\e[32m"
 N="\e[0m"
+echo "Please enter MySQL root password:"
+read -s mysql_root_password
 
 VALIDATE(){
     if [ $1 -ne 0 ]
@@ -29,13 +31,17 @@ fi
 dnf module disable nodejs -y &>>$LOG
 VALIDATE $? "Disabled default nodejs"
 
-dnf module enable nodejs:20 -y -y &>>$LOG
+dnf module enable nodejs:20 -y &>>$LOG
 VALIDATE $? "Enabled nodejs:20"
 
-dnf install nodejs -y -y &>>$LOG
+dnf install nodejs -y &>>$LOG
 VALIDATE $? "NodeJS Installation"
- 
-useradd expense &>>$LOG
+
+id expense &>>$LOG
+if [ $? -ne 0 ]
+then
+    useradd expense &>>$LOG
+fi
 
 curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip &>>$LOG
 VALIDATE $? "Downloaded Backend Code"
@@ -56,12 +62,22 @@ cp /home/ec2-user/expense-shell/backend.service /etc/systemd/system/backend.serv
 VALIDATE $? "Copied backend service"
 
 systemctl daemon-reload
+VALIDATE $? "Realoaded systemctl daemon"
 
 systemctl start backend
+VALIDATE $? "Started Backend service"
+
 systemctl enable backend
+VALIDATE $? "Enabled Backend service"
+
 dnf install mysql -y
-mysql -h db.daws78s.online -uroot -pExpenseApp@1 < /app/schema/backend.sql
+VALIDATE $? "Installed MySQL Client"
+
+mysql -h db.daws78s.online -uroot -p${mysql_root_password} < /app/schema/backend.sql
+VALIDATE $? "MySQL schema loaded"
+
 systemctl restart backend
+VALIDATE $? "Restarted backend service"
 
 
 
