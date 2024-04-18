@@ -56,6 +56,7 @@ cp /home/ec2-user/expense-shell/backend.service /etc/systemd/system/backend.serv
 VALIDATE $? "Copied backend service"
 
 systemctl daemon-reload
+
 systemctl start backend
 systemctl enable backend
 dnf install mysql -y
