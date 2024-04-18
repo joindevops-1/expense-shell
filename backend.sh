@@ -61,22 +61,22 @@ VALIDATE $? "Installed NodeJS dependencies"
 cp /home/ec2-user/expense-shell/backend.service /etc/systemd/system/backend.service
 VALIDATE $? "Copied backend service"
 
-systemctl daemon-reload
+systemctl daemon-reload &>>$LOG
 VALIDATE $? "Realoaded systemctl daemon"
 
-systemctl start backend
+systemctl start backend &>>$LOG
 VALIDATE $? "Started Backend service"
 
-systemctl enable backend
+systemctl enable backend &>>$LOG
 VALIDATE $? "Enabled Backend service"
 
-dnf install mysql -y
+dnf install mysql -y &>>$LOG
 VALIDATE $? "Installed MySQL Client"
 
-mysql -h db.daws78s.online -uroot -p${mysql_root_password} < /app/schema/backend.sql
+mysql -h db.daws78s.online -uroot -p${mysql_root_password} < /app/schema/backend.sql &>>$LOG
 VALIDATE $? "MySQL schema loaded"
 
-systemctl restart backend
+systemctl restart backend &>>$LOG
 VALIDATE $? "Restarted backend service"
 
 
