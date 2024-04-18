@@ -46,8 +46,8 @@ fi
 curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip &>>$LOG
 VALIDATE $? "Downloaded Backend Code"
 
-rm -rf /app
-VALIDATE $? "Remove existing app directory"
+rm -rf /app/*
+VALIDATE $? "Remove existing app directory contents"
 
 mkdir -p /app  &>>$LOG
 VALIDATE $? "app directory created"
