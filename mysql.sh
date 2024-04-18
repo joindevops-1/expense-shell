@@ -7,6 +7,8 @@ LOG=/tmp/$LOGFILE-$DATE.log
 R="\e[31m"
 G="\e[32m"
 N="\e[0m"
+echo "Please enter MySQL root password:"
+read -s mysql_root_password
 
 VALIDATE(){
     if [ $1 -ne 0 ]
@@ -35,10 +37,10 @@ VALIDATE $? "Enabled MySQL Server"
 systemctl start mysqld &>>$LOG
 VALIDATE $? "Started MySQL Server"
 
-mysql -h db.daws78s.online -u root -pExpenseApp@1 -e 'show databases' &>>$LOG
+mysql -h db.daws78s.online -u root -p${mysql_root_password} -e 'show databases' &>>$LOG
 if [ $? -ne 0 ]
 then
-    mysql_secure_installation --set-root-pass ExpenseApp@1
+    mysql_secure_installation --set-root-pass ${mysql_root_password}
     VALIDATE $? "Root password Setup"
 else
     echo "Root password already setup"
