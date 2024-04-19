@@ -1,16 +1,17 @@
 #!/bin/bash
 
 USERID=$(id -u)
-DATE=$(date +%F-%M-%S)
-LOGFILE=$(echo $0 | cut -d "." -f1)
-LOG=/tmp/$LOGFILE-$DATE.log
+TIMESTAMP=$(date +%F-%H-%M-%S)
+SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
+LOGFILE=/tmp/$SCRIPT_NAME-$TIMESTAMP.log
 R="\e[31m"
 G="\e[32m"
+Y="\e[33m"
 N="\e[0m"
 
 VALIDATE(){
-    if [ $1 -ne 0 ]
-    then
+   if [ $1 -ne 0 ]
+   then
         echo -e "$2...$R FAILURE $N"
         exit 1
     else
@@ -26,27 +27,29 @@ else
     echo "You are super user."
 fi
 
-dnf install nginx -y
-VALIDATE $? "Installing Nginx"
+dnf install nginx -y &>>$LOGFILE
+VALIDATE $? "Installing nginx"
 
-systemctl enable nginx
-VALIDATE $? "Enabling Nginx"
+systemctl enable nginx &>>$LOGFILE
+VALIDATE $? "Enabling nginx"
 
-systemctl start nginx
-VALIDATE $? "Starting Nginx"
+systemctl start nginx &>>$LOGFILE
+VALIDATE $? "Starting nginx"
 
-rm -rf /usr/share/nginx/html/*
-VALIDATE $? "Remove default site"
+rm -rf /usr/share/nginx/html/* &>>$LOGFILE
+VALIDATE $? "Removing existing content"
 
-curl -o /tmp/frontend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip
-VALIDATE $? "Download frontend code"
+curl -o /tmp/frontend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip &>>$LOGFILE
+VALIDATE $? "Downloading frontend code"
 
-cd /usr/share/nginx/html
-unzip /tmp/frontend.zip
-VALIDATE $? "Unzip frontend code"
+cd /usr/share/nginx/html &>>$LOGFILE
+unzip /tmp/frontend.zip &>>$LOGFILE
+VALIDATE $? "Extracting frontend code"
 
-cp /home/ec2-user/expense-shell/expense.conf /etc/nginx/default.d/expense.conf
-VALIDATE $? "Copied expenses conf"
+#check your repo and path
+cp /home/ec2-user/expense-shell/expense.conf /etc/nginx/default.d/expense.conf &>>$LOGFILE
+VALIDATE $? "Copied expense conf"
 
-systemctl restart nginx
-VALIDATE $? "Restarted nginx"
+systemctl restart nginx &>>$LOGFILE
+VALIDATE $? "Restarting nginx"
+
